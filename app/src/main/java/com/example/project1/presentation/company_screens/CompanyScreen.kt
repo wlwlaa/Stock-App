@@ -8,124 +8,138 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.example.project1.viewmodels.company_profile.CompanyProfileViewModel
+import com.example.project1.viewmodels.company_profile.StockChart
+
 
 @Composable
-fun CompanyScreen(viewModel: CompanyProfileViewModel) {
+fun CompanyScreen(
+    viewModel: CompanyProfileViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
-    val state = viewModel.state
-//    val painter = rememberAsyncImagePainter(
-//        model = ImageRequest.Builder(context.applicationContext)
-//            .data(state.companyProfile?.logo)
-//            .decoderFactory(SvgDecoder.Factory())
-//            .error(androidx.core.R.drawable.ic_call_answer)
-//            .placeholder(androidx.core.R.drawable.notification_template_icon_low_bg)
-//            .build()
-//    )
+    val state by viewModel.state.collectAsState()
 
     Surface {
-        Header(company = state.symbol)
-        if (state.isLoading) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
+        Surface(shadowElevation = 7.dp) {
+            Header(company = state.symbol)
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp)
+        ) {
+
+            if (state.candleErrorMessage == null) {
+                Spacer(modifier = Modifier.height(45.dp))
+                Text(text = "Акции")
+                Spacer(modifier = Modifier.height(12.dp))
+                StockChart(
+                    infos = state.candles,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                        .align(CenterHorizontally)
                 )
             }
-        } else {
-            Text(text = state.candles.toString())
-            Column {
+            Spacer(modifier = Modifier.padding(15.dp))
+            Divider(Modifier.padding(20.dp))
+            Spacer(modifier = Modifier.padding(12.dp))
+
+
+
+            if (state.companyProfile != null) {
+
                 state.companyProfile?.let {
                     Column {
                         Row {
                             Column {
-                                Text(
-                                    text = it.name,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
+                                Row {
+                                    Text(
+                                        text = it.name,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 18.sp,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = it.ticker,
+                                        fontStyle = FontStyle.Italic,
+                                        fontSize = 14.sp,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = it.ticker,
+                                    text = it.exchange,
                                     fontStyle = FontStyle.Italic,
                                     fontSize = 14.sp,
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
-                            AsyncImage(model = it.logo, contentDescription = "Company logo")
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Divider(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Деятельность: ${it.industry}",
-                            fontSize = 14.sp,
-                            modifier = Modifier.fillMaxWidth(),
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Страна: ${it.country}",
-                            fontSize = 14.sp,
-                            modifier = Modifier.fillMaxWidth(),
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Divider(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = it.weburl!!,
-                            fontSize = 12.sp,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
                     }
                 }
+            } else {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Не удалось загрузить профиль: ${state.companyErrorMessage}",
+                        fontSize = 30.sp
+                    )
+                    Spacer(modifier = Modifier.height(30.dp))
+                }
             }
-        }
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = state.errorMessage ?: "",
-                fontSize = 30.sp
-            )
-            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }
 
 
 @Composable
-fun Header(company: String) {
+fun CompanyLogo(logo: String) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(logo)
+            .decoderFactory(SvgDecoder.Factory())
+            .build(),
+        contentDescription = null
+    )
+}
+
+
+@Composable
+fun Header(
+    company: String
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
+            .height(58.dp)
     ) {
         Text(
             text = company,
@@ -138,34 +152,11 @@ fun Header(company: String) {
 }
 
 
-@Preview
 @Composable
-fun CompanyScreenPreview(){
-    val company = "AAPL"
-    val country = "US"
-    val currency = "USD"
-    val exchange = "NASDAQ NMS - GLOBAL MARKET"
-    val industry = "Technology"
-    val ipo = "1980-12-12"
-    val logo = "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/AAPL.svg"
-    val marketCapitalization = 2813078.475248
-    val name = "Apple Inc"
-    val shareOutstanding = 15728.7
-    val ticker = "AAPL"
-    val weburl = "https://www.apple.com/"
-
-    Surface {
-        Header(company = name)
-
+fun ProgressIndicator() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
-}
-
-@Preview
-@Composable
-fun ScreenPreview() {
-    Spacer(modifier = Modifier.height(12.dp))
-    Divider(modifier = Modifier
-        .fillMaxWidth()
-        .height(1.dp))
-
 }

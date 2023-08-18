@@ -19,9 +19,7 @@ class SearchViewModel : ViewModel() {
 
     fun onEvent(event: SearchEvent) {
         when (event) {
-            is SearchEvent.Refresh -> {
-                performSearch()
-            }
+            is SearchEvent.Refresh -> performSearch()
             is SearchEvent.OnSearchQueryChange -> {
                 state = state.copy(query = event.query)
                 _searchJob?.cancel()
@@ -39,9 +37,13 @@ class SearchViewModel : ViewModel() {
             return
         }
 
+        _searchJob?.cancel()
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = MyApiClient.finnhubService.getSymbolLookup(query)
+
+                //if (response.body() == "")
+
                 withContext(Dispatchers.Main) {
                     state = if (response.isSuccessful) {
                         state.copy(

@@ -1,10 +1,11 @@
 package com.example.project1.viewmodels.company_profile
 
+import com.example.project1.data.local.IntradayInfo
+
 data class CompanyProfileState(
     val symbol: String = "",
     var companyProfile: CompanyProfileData? = null,
-    var candles: List<Double>? = emptyList(),
-    var timestamps: List<Long>? = emptyList(),
-    var errorMessage: String? = null,
-    var isLoading: Boolean = false
+    var candles: List<IntradayInfo> = emptyList(),
+    var candleErrorMessage: String? = null,
+    var companyErrorMessage: String? = null
 )

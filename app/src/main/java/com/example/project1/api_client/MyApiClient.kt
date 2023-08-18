@@ -12,7 +12,7 @@ import retrofit2.http.Query
 object MyApiClient {
     private const val BASE_URL = "https://finnhub.io/api/v1/"
     private const val API_KEY = "ciqolu1r01qjff7csko0ciqolu1r01qjff7cskog"
-    private val _stockResolution = "60"
+    private const val _stockResolution = "D"
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()

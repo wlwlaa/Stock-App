@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.project1.ui.theme.Project1Theme
 
 @Composable
 fun BottomNavigation(navController: NavController) {
@@ -19,17 +20,22 @@ fun BottomNavigation(navController: NavController) {
         BottomMenuItem.Search,
         BottomMenuItem.Settings)
 
-    NavigationBar(modifier = Modifier
-        .clip(shape = AbsoluteRoundedCornerShape(topLeftPercent = 20, topRightPercent = 20))) {
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = backStackEntry?.destination?.route
-        items.forEach { bottomMenuItem ->
-            NavigationBarItem(
-                selected = currentRoute == bottomMenuItem.route,
-                onClick = { navController.navigate(bottomMenuItem.route) },
-                icon = { Icon(bottomMenuItem.icon, contentDescription = bottomMenuItem.label) },
-                label = { Text(bottomMenuItem.label) },
-                alwaysShowLabel = false)
+    Project1Theme {
+        NavigationBar(
+            modifier = Modifier
+                .clip(shape = AbsoluteRoundedCornerShape(topLeftPercent = 20, topRightPercent = 20))
+        ) {
+            val backStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = backStackEntry?.destination?.route
+            items.forEach { bottomMenuItem ->
+                NavigationBarItem(
+                    selected = currentRoute == bottomMenuItem.route,
+                    onClick = { navController.navigate(bottomMenuItem.route) },
+                    icon = { Icon(bottomMenuItem.icon, contentDescription = bottomMenuItem.label) },
+                    label = { Text(bottomMenuItem.label) },
+                    alwaysShowLabel = false
+                )
+            }
         }
     }
 }

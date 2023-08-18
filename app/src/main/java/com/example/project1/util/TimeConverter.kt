@@ -1,15 +1,14 @@
 package com.example.project1.util
 
+import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 
-fun timeToTimestamp(dateTime: String) {
-
-}
-
-fun timestampToTime(dateTime: String) {
-
+fun timestampToTime(dateTime: Long): LocalDateTime {
+    val instant = Instant.ofEpochSecond(dateTime)
+    return LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
 }
 
 fun getCurrentUnixTimestamp(): Long {

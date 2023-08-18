@@ -1,63 +1,64 @@
 package com.example.project1.viewmodels.company_profile
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project1.api_client.MyApiClient
 import com.example.project1.util.convertCompanyProfile
 import com.example.project1.util.getCurrentUnixTimestamp
+import com.example.project1.util.getStockChartPoints
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CompanyProfileViewModel(private val symbol: String): ViewModel() {
-    var state by mutableStateOf(CompanyProfileState())
+
+@HiltViewModel
+class CompanyProfileViewModel @Inject constructor(private val symbol: String): ViewModel() {
+    private var _state = MutableStateFlow(CompanyProfileState())
+    var state = _state.asStateFlow()
     private val _currentTime = getCurrentUnixTimestamp()
 
     init {
-        state = state.copy(
-            symbol = symbol,
-            isLoading = true
-        )
+        getData()
+    }
 
+    private fun getData() {
         viewModelScope.launch {
             try {
-                val response = MyApiClient.finnhubService.getStockCandles(symbol = symbol, from = _currentTime - 604800, to = _currentTime)
-                state = if (response.isSuccessful) {
-                    state.copy(
-                        candles = response.body()?.closePrices,
-                        timestamps = response.body()?.timestamps,
+                _state.value = _state.value.copy(
+                    symbol = symbol
+                )
+
+                val stockCandleResponse = async { MyApiClient.finnhubService.getStockCandles(symbol = symbol, from = _currentTime - 777600, to = _currentTime) }.await()
+                val companyProfileResponse = async { MyApiClient.finnhubService.getCompanyProfile(symbol) }.await()
+
+                if (stockCandleResponse.isSuccessful) {
+                    _state.value = _state.value.copy(
+                        candles = getStockChartPoints(stockCandleResponse.body()!!.closePrices, stockCandleResponse.body()!!.timestamps)
                     )
                 } else {
-                    state.copy(
-                        errorMessage = "Ошибка ${response.message()}",
+                    _state.value = _state.value.copy(
+                        candleErrorMessage = stockCandleResponse.message()
                     )
                 }
+                if (companyProfileResponse.isSuccessful) {
+                    _state.value = _state.value.copy(
+                        companyProfile = convertCompanyProfile(companyProfileResponse.body())
+                    )
+                } else {
+                    _state.value = _state.value.copy(
+                        companyErrorMessage = companyProfileResponse.message()
+                    )
+                }
+
             } catch (e: Exception) {
-                state = state.copy(
-                    errorMessage = e.message,
+                _state.value = _state.value.copy(
+                    companyErrorMessage = e.message,
+                    candleErrorMessage = e.message
                 )
             }
         }
-        viewModelScope.launch {
-            try {
-                val response = MyApiClient.finnhubService.getCompanyProfile(symbol)
-
-                state = if (response.isSuccessful) {
-                    state.copy(
-                        companyProfile = convertCompanyProfile(response.body()),
-                    )
-                } else {
-                    state.copy(
-                        errorMessage = "Не удалось загрузить данные. ${response.message()}",
-                    )
-                }
-            } catch (e: Exception) {
-                state = state.copy(
-                    errorMessage = "Ошибка ${e.message}",
-                )
-            }
-        }
-        state = state.copy(isLoading = false)
     }
 }

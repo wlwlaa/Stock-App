@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.example.project1.CompanyActivity
 import com.example.project1.data.remote.Lookup
 import com.example.project1.viewmodels.search.SearchEvent
+import com.example.project1.viewmodels.search.SearchState
 import com.example.project1.viewmodels.search.SearchViewModel
 
 @Composable
@@ -50,48 +52,10 @@ fun SearchScreen(viewModel: SearchViewModel) {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            TextField(
-                value = state.query,
-                onValueChange = {
-                    viewModel.state.isSearching = true
-                    viewModel.onEvent(
-                        SearchEvent.OnSearchQueryChange(it)
-                    )
-                },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(100)),
-                placeholder = { Text(text = "Поиск...") },
-                maxLines = 1,
-                singleLine = true,
-                trailingIcon = {
-                    if (state.query.isNotEmpty()) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "Очистить",
-                            modifier = Modifier
-                                .clickable {
-                                    viewModel.onEvent(
-                                        SearchEvent.OnSearchQueryChange("")
-                                    )
-                                }
-                        )
-                    }
-                },
-                keyboardActions = KeyboardActions(
-                    onSearch = { viewModel.onEvent(
-                        SearchEvent.OnSearchQueryChange(state.query)
-                    ) }
-                )
-            )
+            SearchBar(viewModel = viewModel, state = state)
 
             if (viewModel.state.isSearching and state.query.isNotEmpty()) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+                ProgressIndicator()
             } else {
                 if (state.query.isNotEmpty()) Text(
                     text = "Найдено: ${state.searchCount}",
@@ -132,6 +96,57 @@ fun SearchScreen(viewModel: SearchViewModel) {
         }
     }
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBar(viewModel: SearchViewModel, state: SearchState) {
+    TextField(
+        value = state.query,
+        onValueChange = {
+            viewModel.state.isSearching = true
+            viewModel.onEvent(
+                SearchEvent.OnSearchQueryChange(it)
+            )
+        },
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(100)),
+        placeholder = { Text(text = "Поиск...") },
+        maxLines = 1,
+        singleLine = true,
+        trailingIcon = {
+            if (state.query.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = "Очистить",
+                    modifier = Modifier
+                        .clickable {
+                            viewModel.onEvent(
+                                SearchEvent.OnSearchQueryChange("")
+                            )
+                        }
+                )
+            }
+        },
+        keyboardActions = KeyboardActions(
+            onSearch = { viewModel.onEvent(
+                SearchEvent.OnSearchQueryChange(state.query)
+            ) }
+        )
+    )
+}
+
+@Composable
+fun ProgressIndicator() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+
 
 @Composable
 fun CompanyItem(item: Lookup) {
