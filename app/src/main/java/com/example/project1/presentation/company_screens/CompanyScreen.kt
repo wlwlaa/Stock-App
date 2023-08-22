@@ -1,5 +1,7 @@
 package com.example.project1.presentation.company_screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
@@ -19,10 +24,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,7 +64,7 @@ fun CompanyScreen(
             if (state.candleErrorMessage == null) {
                 Spacer(modifier = Modifier.height(45.dp))
                 Text(text = "Акции")
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 StockChart(
                     infos = state.candles,
                     modifier = Modifier
@@ -67,39 +77,55 @@ fun CompanyScreen(
             Divider(Modifier.padding(20.dp))
             Spacer(modifier = Modifier.padding(12.dp))
 
-
-
             if (state.companyProfile != null) {
-
                 state.companyProfile?.let {
                     Column {
+
                         Row {
                             Column {
-                                Row {
-                                    Text(
-                                        text = it.name,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 18.sp,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = it.ticker,
-                                        fontStyle = FontStyle.Italic,
-                                        fontSize = 14.sp,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = it.name,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
                                 Text(
                                     text = it.exchange,
                                     fontStyle = FontStyle.Italic,
-                                    fontSize = 14.sp,
-                                    modifier = Modifier.fillMaxWidth()
+                                    fontSize = 14.sp
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Страна: ${it.country}",
+                                    fontStyle = FontStyle.Italic,
+                                    fontSize = 14.sp
                                 )
                             }
+                            Spacer(modifier = Modifier.width(30.dp))
+                            CompanyLogo(logo = it.logo)
                         }
+
+                        Text(
+                            text = "Деятельность: ${it.industry}",
+                        )
+                        Text(
+                            text = "Первый выпуск акций: ${it.ipo.dropLast(6)}"
+                        )
+                        Text(
+                            text = "Валюта: ${it.currency}"
+                        )
+                        Text(
+                            text = "Капитализация: ${it.marketCapitalization} млн. $"
+                        )
+                        Text(
+                            text = "Выпущено акций: ${it.shareOutstanding} млн."
+                        )
+                        Row {
+                            Text(text = "Веб-страница: ")
+                            Hyperlink(url = it.weburl)
+                        }
+
                     }
                 }
             } else {
@@ -119,6 +145,27 @@ fun CompanyScreen(
     }
 }
 
+@Composable
+fun Hyperlink(url: String) {
+    val context = LocalContext.current
+    val annotatedString = buildAnnotatedString {
+        withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, fontSize = 16.sp)) {
+            append(url)
+            addStringAnnotation(tag = "URL", annotation = url, start = 0, end = url.length)
+        }
+    }
+
+    ClickableText(text = annotatedString, onClick = { offset ->
+        annotatedString.getStringAnnotations("URL", offset, offset).firstOrNull()?.let { annotation ->
+            // Open the URL in a browser
+            // Here you can use an Intent to open the URL in a browser
+            // or use any other method you prefer
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+            context.startActivity(intent)
+        }
+    })
+}
+
 
 @Composable
 fun CompanyLogo(logo: String) {
@@ -127,7 +174,11 @@ fun CompanyLogo(logo: String) {
             .data(logo)
             .decoderFactory(SvgDecoder.Factory())
             .build(),
-        contentDescription = null
+        contentDescription = null,
+        modifier = Modifier
+            .height(100.dp)
+            .width(100.dp)
+            .clip(AbsoluteRoundedCornerShape(25))
     )
 }
 

@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.project1.presentation.company_screens.CompanyScreen
@@ -26,7 +27,12 @@ class CompanyActivity : ComponentActivity() {
                     CompanyScreen(CompanyProfileViewModel(receivedData))
                 }
                 IconButton(onClick = { this.finish() }, modifier = Modifier.padding(7.dp)) {
-                    Icon(imageVector = Icons.Filled.KeyboardArrowLeft, contentDescription = "Назад")
+                    Surface {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowLeft,
+                            contentDescription = "Назад"
+                        )
+                    }
                 }
             }
         }

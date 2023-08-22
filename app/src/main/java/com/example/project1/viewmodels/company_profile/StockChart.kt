@@ -2,6 +2,7 @@ package com.example.project1.viewmodels.company_profile
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,9 +39,10 @@ fun StockChart(
         infos.minOfOrNull { it.close }?.toInt() ?: 0
     }
     val density = LocalDensity.current
+    val textColor = MaterialTheme.colorScheme.onBackground.toArgb()
     val textPaint = remember(density) {
         Paint().apply {
-            color = android.graphics.Color.BLACK
+            color = textColor
             textAlign = Paint.Align.CENTER
             textSize = density.run { 12.sp.toPx() }
         }
