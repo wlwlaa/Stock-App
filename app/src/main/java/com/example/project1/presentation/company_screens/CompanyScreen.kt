@@ -16,12 +16,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.sharp.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +32,9 @@ import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
@@ -45,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
+import com.example.project1.R
 import com.example.project1.viewmodels.company_profile.CompanyProfileViewModel
 import com.example.project1.viewmodels.company_profile.StockChart
 
@@ -57,9 +60,11 @@ fun CompanyScreen(
     val state by viewModel.state.collectAsState()
 
     Surface {
-        Surface(shadowElevation = 7.dp) {
+        Surface(
+            shadowElevation = 7.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Header(company = state.symbol)
-
             Box(
                 modifier = Modifier,
                 contentAlignment = CenterEnd
@@ -71,9 +76,9 @@ fun CompanyScreen(
                             Toast.makeText(context, "Добавлено в избранное!", Toast.LENGTH_SHORT).show()
                         },
                         modifier = Modifier
-                            .padding(horizontal = 100.dp, vertical = 7.dp)
+                            .padding(horizontal = 5.dp, vertical = 7.dp)
                     ) {
-                        Icon(imageVector = Icons.Sharp.Star, contentDescription = null)
+                        Icon(imageVector = ImageVector.vectorResource(R.drawable.baseline_star_outline_24), contentDescription = null)
                     }
                 } else {
                     IconButton(
@@ -82,9 +87,9 @@ fun CompanyScreen(
                             Toast.makeText(context, "Удалено из избранного!", Toast.LENGTH_SHORT).show()
                         },
                         modifier = Modifier
-                            .padding(horizontal = 100.dp, vertical = 7.dp)
+                            .padding(horizontal = 5.dp, vertical = 7.dp)
                     ) {
-                        Icon(imageVector = Icons.Filled.Star, contentDescription = null)
+                        Icon(imageVector = Icons.Outlined.Star, contentDescription = null)
                     }
                 }
             }
@@ -187,7 +192,7 @@ fun CompanyScreen(
 fun Hyperlink(url: String) {
     val context = LocalContext.current
     val annotatedString = buildAnnotatedString {
-        withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, fontSize = 16.sp)) {
+        withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)) {
             append(url)
             addStringAnnotation(tag = "URL", annotation = url, start = 0, end = url.length)
         }
