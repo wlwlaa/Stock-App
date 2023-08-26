@@ -73,21 +73,23 @@ fun SearchScreen(viewModel: SearchViewModel) {
                             .fillMaxSize()
                     ) {
                         items(state.searchResults) { result ->
-                            Row(
-                                modifier = Modifier
-                                    .clickable {
-                                        val intent =
-                                            Intent(context, CompanyActivity::class.java).apply {
-                                                putExtra("dataKey", result.symbol)
-                                            }
-                                        context.startActivity(intent)
-                                    }
-                            ) {
-                                CompanyItem(item = result)
+                            if (result.type != "") {
+                                Row(
+                                    modifier = Modifier
+                                        .clickable {
+                                            val intent =
+                                                Intent(context, CompanyActivity::class.java).apply {
+                                                    putExtra("dataKey", result.symbol)
+                                                }
+                                            context.startActivity(intent)
+                                        }
+                                ) {
+                                    CompanyItem(item = result)
+                                }
+                                Spacer(modifier = Modifier.height(7.dp))
+                                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                                Spacer(modifier = Modifier.height(7.dp))
                             }
-                            Spacer(modifier = Modifier.height(7.dp))
-                            Divider(modifier = Modifier.padding(horizontal = 20.dp))
-                            Spacer(modifier = Modifier.height(7.dp))
                         }
                     }
                 }

@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.project1.presentation.company_screens.CompanyScreen
 import com.example.project1.ui.theme.Project1Theme
@@ -24,7 +25,7 @@ class CompanyActivity : ComponentActivity() {
         setContent {
             Project1Theme {
                 if (receivedData != null) {
-                    CompanyScreen(CompanyProfileViewModel(receivedData))
+                    CompanyScreen(CompanyProfileViewModel(receivedData, LocalContext.current))
                 }
                 IconButton(onClick = { this.finish() }, modifier = Modifier.padding(7.dp)) {
                     Surface {

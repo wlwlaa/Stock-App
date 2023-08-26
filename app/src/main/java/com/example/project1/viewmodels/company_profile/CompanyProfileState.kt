@@ -7,5 +7,6 @@ data class CompanyProfileState(
     var companyProfile: CompanyProfileData? = null,
     var candles: List<IntradayInfo> = emptyList(),
     var candleErrorMessage: String? = null,
-    var companyErrorMessage: String? = null
+    var companyErrorMessage: String? = null,
+    var inDatabase: Boolean = false
 )

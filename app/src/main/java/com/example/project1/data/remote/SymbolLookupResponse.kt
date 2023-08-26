@@ -8,12 +8,3 @@ data class SymbolLookupResponse(
     @SerializedName("result")
     val result: List<Lookup>,
 )
-
-data class Lookup(
-    @SerializedName("description")
-    val description: String,
-    @SerializedName("symbol")
-    val symbol: String,
-    @SerializedName("type")
-    val type: String
-)

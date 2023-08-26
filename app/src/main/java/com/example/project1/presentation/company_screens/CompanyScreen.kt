@@ -2,6 +2,7 @@ package com.example.project1.presentation.company_screens
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,14 +15,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +42,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
@@ -45,7 +51,7 @@ import com.example.project1.viewmodels.company_profile.StockChart
 
 @Composable
 fun CompanyScreen(
-    viewModel: CompanyProfileViewModel = hiltViewModel()
+    viewModel: CompanyProfileViewModel,
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
@@ -53,6 +59,35 @@ fun CompanyScreen(
     Surface {
         Surface(shadowElevation = 7.dp) {
             Header(company = state.symbol)
+
+            Box(
+                modifier = Modifier,
+                contentAlignment = CenterEnd
+            ) {
+                if (!state.inDatabase) {
+                    IconButton(
+                        onClick = {
+                            viewModel.addToDatabase()
+                            Toast.makeText(context, "Добавлено в избранное!", Toast.LENGTH_SHORT).show()
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 100.dp, vertical = 7.dp)
+                    ) {
+                        Icon(imageVector = Icons.Sharp.Star, contentDescription = null)
+                    }
+                } else {
+                    IconButton(
+                        onClick = {
+                            viewModel.deleteFromDatabase()
+                            Toast.makeText(context, "Удалено из избранного!", Toast.LENGTH_SHORT).show()
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 100.dp, vertical = 7.dp)
+                    ) {
+                        Icon(imageVector = Icons.Filled.Star, contentDescription = null)
+                    }
+                }
+            }
         }
 
         Column(
@@ -108,6 +143,7 @@ fun CompanyScreen(
 
                         Text(
                             text = "Деятельность: ${it.industry}",
+                            fontWeight = FontWeight.W500
                         )
                         Text(
                             text = "Первый выпуск акций: ${it.ipo.dropLast(6)}"
@@ -128,6 +164,8 @@ fun CompanyScreen(
 
                     }
                 }
+            } else if (state.companyErrorMessage == null) {
+                ProgressIndicator()
             } else {
                 Column(
                     modifier = Modifier.fillMaxSize(),

@@ -1,13 +1,15 @@
 package com.example.project1.bottomnavigation
 
-import com.example.project1.viewmodels.search.SearchViewModel
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.project1.presentation.navigation_screens.HomeScreen
 import com.example.project1.presentation.navigation_screens.SearchScreen
 import com.example.project1.presentation.navigation_screens.SettingsScreen
+import com.example.project1.viewmodels.home.HomeScreenViewModel
+import com.example.project1.viewmodels.search.SearchViewModel
 
 @Composable
 fun BottomNavGraph (navController: NavHostController) {
@@ -16,7 +18,7 @@ fun BottomNavGraph (navController: NavHostController) {
         startDestination = BottomMenuItem.Home.route
     ) {
         composable(route = BottomMenuItem.Home.route) {
-            HomeScreen()
+            HomeScreen(HomeScreenViewModel(LocalContext.current))
         }
         composable(route = BottomMenuItem.Search.route) {
             SearchScreen(SearchViewModel())
