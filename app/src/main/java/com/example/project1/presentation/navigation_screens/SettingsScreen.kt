@@ -30,7 +30,7 @@ fun SettingsScreen() {
         Column {
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 10.dp)
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
                     .fillMaxWidth()
             ) {
                 Text(
@@ -38,7 +38,7 @@ fun SettingsScreen() {
                     fontSize = 30.sp
                 )
             }
-            Divider(Modifier.padding(20.dp))
+            Divider(Modifier.padding(7.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier

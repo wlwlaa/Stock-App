@@ -43,7 +43,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
         Column {
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 15.dp)
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
                     .fillMaxWidth()
             ) {
                 Text(
@@ -51,7 +51,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     fontSize = 30.sp
                 )
             }
-            Divider(Modifier.padding(12.dp))
+            Divider(Modifier.padding(7.dp))
 
             Box(modifier = Modifier
                 .width(360.dp)

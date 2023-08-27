@@ -1,4 +1,4 @@
-package com.example.project1.presentation.company_screens
+package com.example.project1.presentation.company_screen
 
 import android.content.Intent
 import android.net.Uri
@@ -200,9 +200,6 @@ fun Hyperlink(url: String) {
 
     ClickableText(text = annotatedString, onClick = { offset ->
         annotatedString.getStringAnnotations("URL", offset, offset).firstOrNull()?.let { annotation ->
-            // Open the URL in a browser
-            // Here you can use an Intent to open the URL in a browser
-            // or use any other method you prefer
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
             context.startActivity(intent)
         }
