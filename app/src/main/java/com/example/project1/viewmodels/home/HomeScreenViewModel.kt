@@ -14,9 +14,11 @@ class HomeScreenViewModel(context: Context): ViewModel() {
     private var _stockData = MutableStateFlow<List<Stock>>(emptyList())
     val stockData = _stockData.asStateFlow()
 
+    private val _db = StockDatabase.builtDatabase(context).stockDao()
+
     init {
         viewModelScope.launch {
-            StockDatabase.builtDatabase(context).stockDao().getAll().collect {result ->
+            _db.getAll().collect {result ->
                 _stockData.value = result
             }
         }

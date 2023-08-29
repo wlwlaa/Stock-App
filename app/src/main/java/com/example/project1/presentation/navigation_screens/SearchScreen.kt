@@ -93,7 +93,6 @@ fun SearchScreen(viewModel: SearchViewModel) {
                         }
                     }
                 }
-                /* Toast with error message */
             }
         }
     }

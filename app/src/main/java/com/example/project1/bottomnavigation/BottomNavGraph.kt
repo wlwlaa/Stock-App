@@ -10,6 +10,7 @@ import com.example.project1.presentation.navigation_screens.SearchScreen
 import com.example.project1.presentation.navigation_screens.SettingsScreen
 import com.example.project1.viewmodels.home.HomeScreenViewModel
 import com.example.project1.viewmodels.search.SearchViewModel
+import com.example.project1.viewmodels.settings.SettingsViewModel
 
 @Composable
 fun BottomNavGraph (navController: NavHostController) {
@@ -24,7 +25,7 @@ fun BottomNavGraph (navController: NavHostController) {
             SearchScreen(SearchViewModel())
         }
         composable(route = BottomMenuItem.Settings.route) {
-            SettingsScreen()
+            SettingsScreen(SettingsViewModel(LocalContext.current))
         }
     }
 
