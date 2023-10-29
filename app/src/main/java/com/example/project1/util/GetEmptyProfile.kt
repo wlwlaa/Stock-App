@@ -1,6 +1,6 @@
 package com.example.project1.util
 
-import com.example.project1.viewmodels.company_profile.CompanyProfileData
+import com.example.project1.models.company_profile.CompanyProfileData
 
 fun getEmptyProfile() : CompanyProfileData {
     return  CompanyProfileData(

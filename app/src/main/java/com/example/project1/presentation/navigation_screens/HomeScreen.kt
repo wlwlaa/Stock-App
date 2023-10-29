@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.project1.CompanyActivity
 import com.example.project1.data.local.Stock
-import com.example.project1.viewmodels.home.HomeScreenViewModel
+import com.example.project1.models.home.HomeScreenViewModel
 
 
 @Composable
@@ -39,7 +39,10 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
     val context = LocalContext.current
     val stockList by viewModel.stockData.collectAsState()
 
-    Surface {
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         Column {
             Box(
                 modifier = Modifier

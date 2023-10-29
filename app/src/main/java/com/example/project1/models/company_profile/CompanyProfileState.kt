@@ -1,4 +1,4 @@
-package com.example.project1.viewmodels.company_profile
+package com.example.project1.models.company_profile
 
 import com.example.project1.data.local.IntradayInfo
 

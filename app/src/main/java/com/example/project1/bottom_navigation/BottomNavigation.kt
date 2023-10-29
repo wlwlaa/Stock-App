@@ -1,4 +1,4 @@
-package com.example.project1.bottomnavigation
+package com.example.project1.bottom_navigation
 
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.material3.Icon

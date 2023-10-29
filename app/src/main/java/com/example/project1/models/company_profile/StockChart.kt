@@ -1,4 +1,4 @@
-package com.example.project1.viewmodels.company_profile
+package com.example.project1.models.company_profile
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas

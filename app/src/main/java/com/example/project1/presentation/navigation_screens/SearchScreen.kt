@@ -38,9 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.project1.CompanyActivity
 import com.example.project1.data.remote.Lookup
-import com.example.project1.viewmodels.search.SearchEvent
-import com.example.project1.viewmodels.search.SearchState
-import com.example.project1.viewmodels.search.SearchViewModel
+import com.example.project1.models.search.SearchEvent
+import com.example.project1.models.search.SearchState
+import com.example.project1.models.search.SearchViewModel
 
 @Composable
 fun SearchScreen(viewModel: SearchViewModel) {
@@ -59,6 +59,7 @@ fun SearchScreen(viewModel: SearchViewModel) {
             } else {
                 if (state.query.isNotEmpty()) Text(
                     text = "Найдено: ${state.searchCount}",
+                    modifier = Modifier.padding(7.dp),
                     fontStyle = FontStyle.Italic,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Light,
@@ -114,7 +115,7 @@ fun SearchBar(viewModel: SearchViewModel, state: SearchState) {
             .padding(16.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(100)),
-        placeholder = { Text(text = "Поиск...") },
+        placeholder = { Text(text = "Тикер, isin или cusip...") },
         maxLines = 1,
         singleLine = true,
         trailingIcon = {

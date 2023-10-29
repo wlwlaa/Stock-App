@@ -48,8 +48,8 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.example.project1.R
-import com.example.project1.viewmodels.company_profile.CompanyProfileViewModel
-import com.example.project1.viewmodels.company_profile.StockChart
+import com.example.project1.models.company_profile.CompanyProfileViewModel
+import com.example.project1.models.company_profile.StockChart
 
 
 @Composable
@@ -100,7 +100,6 @@ fun CompanyScreen(
                 .fillMaxSize()
                 .padding(20.dp)
         ) {
-
             if (state.candleErrorMessage == null) {
                 Spacer(modifier = Modifier.height(45.dp))
                 Text(text = "Акции")
@@ -120,8 +119,11 @@ fun CompanyScreen(
             if (state.companyProfile != null) {
                 state.companyProfile?.let {
                     Column {
-
-                        Row {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
                             Column {
                                 Text(
                                     text = it.name,
@@ -142,8 +144,10 @@ fun CompanyScreen(
                                     fontSize = 14.sp
                                 )
                             }
-                            Spacer(modifier = Modifier.width(30.dp))
-                            CompanyLogo(logo = it.logo)
+                            Spacer(modifier = Modifier.weight(1f))
+                            CompanyLogo(
+                                logo = it.logo
+                            )
                         }
 
                         Text(
@@ -178,7 +182,7 @@ fun CompanyScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Не удалось загрузить профиль: ${state.companyErrorMessage}",
+                        text = "Не удалось загрузить профиль. ${state.companyErrorMessage}",
                         fontSize = 30.sp
                     )
                     Spacer(modifier = Modifier.height(30.dp))
@@ -208,7 +212,9 @@ fun Hyperlink(url: String) {
 
 
 @Composable
-fun CompanyLogo(logo: String) {
+fun CompanyLogo(
+    logo: String
+) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(logo)

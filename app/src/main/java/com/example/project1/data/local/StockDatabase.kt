@@ -32,3 +32,9 @@ abstract class StockDatabase: RoomDatabase() {
         }
     }
 }
+//скоупы обратить внимание
+//dependency inj
+//класс application
+//сделать что-то на xml
+//сервис на котлине
+// вынести обращение в репозиторий - изолировать вьюмодел

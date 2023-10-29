@@ -1,6 +1,5 @@
-package com.example.project1.viewmodels.search
+package com.example.project1.models.search
 
 sealed class SearchEvent {
-    object Refresh: SearchEvent()
     data class OnSearchQueryChange(val query: String): SearchEvent()
 }

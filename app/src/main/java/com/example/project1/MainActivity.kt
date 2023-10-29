@@ -10,7 +10,6 @@ import com.example.project1.ui.theme.Project1Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             Project1Theme {
                 MainScreen()

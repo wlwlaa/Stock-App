@@ -1,4 +1,4 @@
-package com.example.project1.viewmodels.search
+package com.example.project1.models.search
 
 import com.example.project1.data.remote.Lookup
 

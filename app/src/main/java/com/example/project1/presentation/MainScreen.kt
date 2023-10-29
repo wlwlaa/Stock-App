@@ -7,14 +7,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.project1.bottomnavigation.BottomNavGraph
-import com.example.project1.bottomnavigation.BottomNavigation
+import com.example.project1.bottom_navigation.BottomNavGraph
+import com.example.project1.bottom_navigation.BottomNavigation
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+
+
+
     Scaffold(
         bottomBar = { BottomNavigation(navController = navController) }
     ) { innerPadding ->

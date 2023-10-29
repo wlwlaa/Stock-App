@@ -1,4 +1,4 @@
-package com.example.project1.viewmodels.search
+package com.example.project1.models.search
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SearchViewModel : ViewModel() {
     var state by mutableStateOf(SearchState())
@@ -19,13 +18,20 @@ class SearchViewModel : ViewModel() {
 
     fun onEvent(event: SearchEvent) {
         when (event) {
-            is SearchEvent.Refresh -> performSearch()
             is SearchEvent.OnSearchQueryChange -> {
-                state = state.copy(query = event.query)
+                state = state.copy(
+                    query = event.query
+                )
                 _searchJob?.cancel()
-                _searchJob = viewModelScope.launch {
-                    delay(800L)
-                    performSearch()
+                if (state.query == "") {
+                    state = state.copy(
+                        searchResults = emptyList()
+                    )
+                } else {
+                    _searchJob = viewModelScope.launch {
+                        delay(800L)
+                        performSearch()
+                    }
                 }
             }
         }
@@ -42,21 +48,17 @@ class SearchViewModel : ViewModel() {
             try {
                 val response = MyApiClient.finnhubService.getSymbolLookup(query)
 
-                //if (response.body() == "")
-
-                withContext(Dispatchers.Main) {
-                    state = if (response.isSuccessful) {
-                        state.copy(
-                            searchResults = response.body()?.result ?: emptyList(),
-                            searchCount = response.body()?.count ?: 0,
-                            isSearching = false
-                        )
-                    } else {
-                        state.copy(
-                            errorMessage = "Ошибка: ${response.message()}",
-                            isSearching = false
-                        )
-                    }
+                state = if (response.isSuccessful) {
+                    state.copy(
+                        searchResults = response.body()?.result ?: emptyList(),
+                        searchCount = response.body()?.count ?: 0,
+                        isSearching = false
+                    )
+                } else {
+                    state.copy(
+                        errorMessage = "Ошибка: ${response.message()}",
+                        isSearching = false
+                    )
                 }
             } catch (e: Exception) {
                 state = state.copy(
